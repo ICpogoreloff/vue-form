@@ -2,14 +2,15 @@
   <div class="container">
     <form class="card" @submit.prevent="submitHandler">
       <h1>Анкета на Vue разработчика!</h1>
-      <div class="form-control">
+      <div class="form-control" :class="{invalid: errors.name}">
         <label for="name">Как тебя зовут?</label>
         <input
             type="text"
             id="name"
-            placeholder="Введи имя"
+            placeholder="Введите имя"
             v-model.trim="name"
         >
+        <small v-if="errors.name">{{errors.name}}</small>
       </div>
 
       <div class="form-control">
@@ -59,7 +60,7 @@
       <div class="form-checkbox">
         <span class="label">Согласие на хранение и обработку персональных данных</span>
         <div class="checkbox">
-          <label><input type="checkbox" v-model="agree" name="rulse"/> Vuex</label>
+          <label><input type="checkbox" v-model="agree" name="agree"/> Подтверждаю согласие</label>
         </div>
       </div>
 
@@ -75,27 +76,47 @@
         name: '',
         age: 23,
         city: 'msk',
-        relocate: null,
+        relocate: 'yes',
         skills: [],
-        agree: false
+        agree: false,
+        errors: {
+          name: null
+        }
       }
     },
     methods: {
+      formIsValid() {
+        let isValid = true
+        if (this.name.length === 0) {
+          this.errors.name = 'Введите ваше имя'
+          isValid = false
+        } else {
+           this.errors.name = null
+        }
+        return isValid
+      },
       submitHandler() {
-        console.group('Form Data')
-        console.log('Name:', this.name)
-        console.log('Age:', this.age)
-        console.log('City:', this.city)
-        console.log('Relocate:', this.relocate)
-        console.log('Skills:', this.skills)
-        console.log('Rules:', this.agree)
-        console.groupEnd()
+        if (this.formIsValid()) {
+          console.group('Form Data')
+          console.log('Name:', this.name)
+          console.log('Age:', this.age)
+          console.log('City:', this.city)
+          console.log('Relocate:', this.relocate)
+          console.log('Skills:', this.skills)
+          console.log('Agree:', this.agree)
+          console.groupEnd()
+        }
       }
     }
   }
-  console.log(true/(true-false+true)+false) // :D
 </script>
 
 <style>
+  .form-control small {
+    color: red;
+  }
 
+  .form-control.invalid input {
+    border-color: red;
+  }
 </style>
